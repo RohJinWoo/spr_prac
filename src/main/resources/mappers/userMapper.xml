@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spr.mapper.userMapper">
+
+	<select id="user_SELECT" resultType="User">
+		SELECT u_id
+		FROM user
+		<where>
+			<if test="u_id != null">u_id = #{u_id}</if>
+			<if test="password != null">AND password = #{password}</if>
+			<if test="u_name != null">AND u_name = #{u_name}</if>
+			<if test="email != null">AND email = #{email}</if>
+		</where>
+	</select>
+
+	<insert id="sign_up">
+		INSERT INTO user(u_id, u_name, password, email, token, createdAt, updatedAt)
+		VALUES(#{u_id}, #{u_name}, #{password}, #{email}, #{token}, now(), now())
+	</insert>
+
+	<update id="change_pw">
+		UPDATE user
+		<set>
+			updatedAt = now()
+			<if test="token != null">AND token = null</if>
+			<if test="password != null">AND password = #{password}</if>
+		</set>
+		<where>
+			<if test="email != null">email = #{email}</if>
+			<if test="token != null">AND token = #{token}</if>
+			<if test="u_id != null">AND u_id = #{u_id}</if>
+		</where>
+	</update>
+
+</mapper>
